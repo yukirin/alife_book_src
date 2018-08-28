@@ -3,7 +3,7 @@
 
 import sys
 import os
-sys.path.append(os.curdir)  # 親ディレクトリのファイルをインポートするための設定
+sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
 import numpy as np
 from alifebook_lib.visualizers import MatrixVisualizer
 import game_of_life_patterns
