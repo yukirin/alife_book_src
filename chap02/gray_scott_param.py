@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
 import numpy as np
 from alifebook_lib.visualizers import MatrixVisualizer
@@ -52,8 +53,8 @@ while visualizer:  # visualizerはウィンドウが閉じられるとFalseを�
         laplacian_v = (np.roll(v_pad, 1, axis=0) + np.roll(v_pad, -1, axis=0) +
                        np.roll(v_pad, 1, axis=1) + np.roll(v_pad, -1, axis=1) - 4*v_pad) / (dx*dx)
         # その後、サイズを揃える
-        laplacian_u = laplacian_u[1:-1,1:-1]
-        laplacian_v = laplacian_v[1:-1,1:-1]
+        laplacian_u = laplacian_u[1:-1, 1:-1]
+        laplacian_v = laplacian_v[1:-1, 1:-1]
         # Gray-Scottモデル方程式
         dudt = Du*laplacian_u - u*v*v + f*(1.0-u)
         dvdt = Dv*laplacian_v + u*v*v - (f+k)*v

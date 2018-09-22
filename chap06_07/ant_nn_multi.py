@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
 import numpy as np
 from alifebook_lib.simulators import AntSimulator
@@ -23,9 +24,9 @@ for i in range(1, len(sys.argv), 2):
         agent_nn_context_val_list.append(context_val)
 
 N = np.sum(agent_num)
-action = np.empty((N, 2)) # 各エージェントのアクションを収めるための (Nx2) の配列
+action = np.empty((N, 2))  # 各エージェントのアクションを収めるための (Nx2) の配列
 
-simulator = AntSimulator(N, decay_rate=0.995, hormone_secretion=0.15)
+simulator = AntSimulator(N, decay_rate=0.999, hormone_secretion=0.10)
 
 # エージェントの遺伝子ファイル毎に色をセットする
 idx = 0
@@ -45,7 +46,8 @@ if len(agent_num) > 1:
 while simulator:
     sensor_data = simulator.get_sensor_data()
     for i in range(N):
-        a, c = generate_action(agent_nn_model_list[i], sensor_data[i], agent_nn_context_val_list[i])
+        a, c = generate_action(
+            agent_nn_model_list[i], sensor_data[i], agent_nn_context_val_list[i])
         action[i] = a
         agent_nn_context_val_list[i] = c
     simulator.update(action)

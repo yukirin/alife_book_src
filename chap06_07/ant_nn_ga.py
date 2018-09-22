@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
 import numpy as np
 from keras.models import Sequential
@@ -20,11 +21,14 @@ population = np.random.random((POPULATION_SIZE, GENE_LENGTH)) * 10 - 5
 offsprings = np.empty(population.shape)
 fitness = np.empty(POPULATION_SIZE)
 
-def select(population, fitness, TOURNAMENT_SIZE = 3):
-    idxs = np.random.choice(range(len(population)), TOURNAMENT_SIZE, replace=False)
+
+def select(population, fitness, TOURNAMENT_SIZE=3):
+    idxs = np.random.choice(range(len(population)),
+                            TOURNAMENT_SIZE, replace=False)
     fits = fitness[idxs]
     winner_idx = idxs[np.argmax(fits)]
     return population[winner_idx]
+
 
 simulator = AntSimulator(1)
 generation = 0
@@ -40,7 +44,8 @@ while True:
         simulator.reset()
         for i in range(ONE_TRIAL_STEP):
             sensor_datas = simulator.get_sensor_data()
-            action, context_val = generate_action(nn_model, sensor_datas[0], context_val)
+            action, context_val = generate_action(
+                nn_model, sensor_datas[0], context_val)
             simulator.update(action)
 
         # 今回のフィットネスを保存

@@ -2,8 +2,9 @@ import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Activation, InputLayer
 
-CONTEXT_NEURON_NUM=2
-HIDDEN_NEURON_NUM=4
+CONTEXT_NEURON_NUM = 2
+HIDDEN_NEURON_NUM = 4
+
 
 def generate_nn_model():
     nn_model = Sequential()

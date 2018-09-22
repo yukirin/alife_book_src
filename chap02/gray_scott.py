@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
 import numpy as np
 from alifebook_lib.visualizers import MatrixVisualizer
@@ -21,8 +22,8 @@ Dv = 1e-5
 f, k = 0.04, 0.06  # amorphous
 # f, k = 0.035, 0.065  # spots
 # f, k = 0.012, 0.05  # wandering bubbles
-# f, k = 0.025, 0.05  # waves
-# f, k = 0.022, 0.051 # stripe
+f, k = 0.025, 0.05  # waves
+# f, k = 0.022, 0.051  # stripe
 
 # 初期化
 u = np.ones((SPACE_GRID_SIZE, SPACE_GRID_SIZE))

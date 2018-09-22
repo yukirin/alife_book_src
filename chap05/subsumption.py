@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
 import numpy as np
 from abc import abstractmethod
 from alifebook_lib.simulators import VehicleSimulator
+
 
 class SubsumptionModule(object):
     def __init__(self):
@@ -58,14 +60,17 @@ class AvoidModule(SubsumptionModule):
         pass
 
     def on_update(self):
-        self.set_output("left_wheel_speed",  10 + 30 * self.get_input("left_distance"))
-        self.set_output("right_wheel_speed", 10 + 30 * self.get_input("right_distance"))
+        self.set_output("left_wheel_speed",  10 + 30 *
+                        self.get_input("left_distance"))
+        self.set_output("right_wheel_speed", 10 + 30 *
+                        self.get_input("right_distance"))
         self.set_active_module_name(self.__class__.__name__)
 
 
 class WanderModule(SubsumptionModule):
     TURN_START_STEP = 100
     TURN_END_STEP = 180
+
     def on_init(self):
         self.counter = 0
         self.add_child_module('avoid', AvoidModule())
@@ -78,9 +83,12 @@ class WanderModule(SubsumptionModule):
 
         if self.counter < self.TURN_START_STEP:
             # counterがTURN_START_STEPに達するまでは下位のモジュールを抑制しない
-            self.set_output("left_wheel_speed",  self.child_modules['avoid'].get_output("left_wheel_speed"))
-            self.set_output("right_wheel_speed", self.child_modules['avoid'].get_output("right_wheel_speed"))
-            self.set_active_module_name(self.child_modules['avoid'].get_active_module_name())
+            self.set_output(
+                "left_wheel_speed",  self.child_modules['avoid'].get_output("left_wheel_speed"))
+            self.set_output("right_wheel_speed", self.child_modules['avoid'].get_output(
+                "right_wheel_speed"))
+            self.set_active_module_name(
+                self.child_modules['avoid'].get_active_module_name())
         elif self.counter == self.TURN_START_STEP:
             # ランダムに左回りか右回りを決定して車輪の速度をセットする
             if np.random.rand() < 0.5:
@@ -97,12 +105,13 @@ class WanderModule(SubsumptionModule):
 
 from t3 import T3
 
+
 class ChaosWanderModule(SubsumptionModule):
     def on_init(self):
         self.add_child_module('avoid', AvoidModule())
-        self.t3 = T3(omega0 = 0.9, omega1 = 0.3, epsilon = 0.1)
-        self.t3.set_parameters(omega0 = np.random.rand())
-        self.t3.set_parameters(omega1 = np.random.rand())
+        self.t3 = T3(omega0=0.9, omega1=0.3, epsilon=0.1)
+        self.t3.set_parameters(omega0=np.random.rand())
+        self.t3.set_parameters(omega1=np.random.rand())
 
     def on_update(self):
         x, y = self.t3.next()  # update chaos dynamics
@@ -115,11 +124,14 @@ class ChaosWanderModule(SubsumptionModule):
             self.set_active_module_name(self.__class__.__name__)
         else:
             # 距離センサーが検知したら、avoid層で回避して、カオスのパラメターも変更して別の振る舞いを獲得する
-            self.set_output("left_wheel_speed",  self.child_modules['avoid'].get_output("left_wheel_speed"))
-            self.set_output("right_wheel_speed", self.child_modules['avoid'].get_output("right_wheel_speed"))
-            self.t3.set_parameters(omega0 = np.random.rand())
-            self.t3.set_parameters(omega1 = np.random.rand())
-            self.set_active_module_name(self.child_modules['avoid'].get_active_module_name())
+            self.set_output(
+                "left_wheel_speed",  self.child_modules['avoid'].get_output("left_wheel_speed"))
+            self.set_output("right_wheel_speed", self.child_modules['avoid'].get_output(
+                "right_wheel_speed"))
+            self.t3.set_parameters(omega0=np.random.rand())
+            self.t3.set_parameters(omega1=np.random.rand())
+            self.set_active_module_name(
+                self.child_modules['avoid'].get_active_module_name())
 
 
 class ExploreModule(SubsumptionModule):
@@ -136,18 +148,21 @@ class ExploreModule(SubsumptionModule):
             self.set_active_module_name(self.__class__.__name__)
         else:
             # エサがない時は下位のモジュールは抑制せずにそのままアウトプットとする
-            self.set_output("left_wheel_speed",  self.child_modules['wander'].get_output("left_wheel_speed"))
-            self.set_output("right_wheel_speed", self.child_modules['wander'].get_output("right_wheel_speed"))
-            self.set_active_module_name(self.child_modules['wander'].get_active_module_name())
+            self.set_output("left_wheel_speed",  self.child_modules['wander'].get_output(
+                "left_wheel_speed"))
+            self.set_output("right_wheel_speed", self.child_modules['wander'].get_output(
+                "right_wheel_speed"))
+            self.set_active_module_name(
+                self.child_modules['wander'].get_active_module_name())
 
 
 ######################
 # change architecture
 ######################
-controller = AvoidModule()
-#controller = WanderModule()
-#controller = ChaosWanderModule()  # ワンダーモジュールの内部にカオスを入れる
-#controller = ExploreModule()
+#controller = AvoidModule()
+# controller = WanderModule()
+controller = ChaosWanderModule()  # ワンダーモジュールの内部にカオスを入れる
+# controller = ExploreModule()
 
 # simulatorの初期化 (Appendix参照)
 simulator = VehicleSimulator(obstacle_num=5, feed_num=40)
@@ -160,7 +175,7 @@ while simulator:
     controller.update()
 
     # アクションを生成してアップデート
-    left_wheel_speed  = controller.get_output('left_wheel_speed')
+    left_wheel_speed = controller.get_output('left_wheel_speed')
     right_wheel_speed = controller.get_output('right_wheel_speed')
     action = [left_wheel_speed, right_wheel_speed]
     color = (0, 0, 255)

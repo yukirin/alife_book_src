@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os
 sys.path.append(os.pardir)  # 親ディレクトリのファイルをインポートするための設定
 import numpy as np
 from alifebook_lib.visualizers import ArrayVisualizer
@@ -12,7 +13,7 @@ visualizer = ArrayVisualizer()
 SPACE_SIZE = 600
 
 # CAのバイナリコーディングされたルール (Wolfram code)
-RULE = 30
+RULE = 99
 
 # CAの状態空間
 state = np.zeros(SPACE_SIZE, dtype=np.int8)
@@ -20,9 +21,9 @@ next_state = np.empty(SPACE_SIZE, dtype=np.int8)
 
 # 最初の状態を初期化
 ### ランダム ###
-# state[:] = np.random.randint(2, size=len(state))
+state[:] = np.random.randint(2, size=len(state))
 ### 中央の１ピクセルのみ１、後は０ ###
-state[len(state)//2] = 1
+# state[len(state)//2] = 1
 
 while visualizer:  # visualizerはウィンドウが閉じられるとFalseを返す
     # stateから計算した次の結果をnext_stateに保存
@@ -30,7 +31,7 @@ while visualizer:  # visualizerはウィンドウが閉じられるとFalseを�
         # left, center, right cellの状態を取得
         l = state[i-1]
         c = state[i]
-        r = state[(i+1)%SPACE_SIZE]
+        r = state[(i+1) % SPACE_SIZE]
         # neighbor_cell_codeは現在の状態のバイナリコーディング
         # ex) 現在が[1 1 0]の場合
         #     neighbor_cell_codeは 1*2^2 + 1*2^1 + 0*2^0 = 6となるので、
